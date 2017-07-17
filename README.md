@@ -12,11 +12,11 @@ Here is the plan!
 ```
 +----------------------+   +------------+   +-----+
 | 24V DC Power Supply  |==>| Fan Driver |==>| Fan |
-+----------------------+   |    &       |   +-----+
-     +-----------------+   |  1Wire Hub |   +------------------------------+
++----------------------+   |            |   +-----+
+     +-----------------+   |     &      |   +------------------------------+
      | 1Wire devices   |==>|            |<=>| MCU with display with keypad |
-     +-----------------+|  +------------+   +------------------------------+
-      +-----------------+
+     +-----------------+|  |  1Wire Hub |==>|                              |
+      +-----------------+  +------------+   +------------------------------+
 ```
 
 ### Power Supply
@@ -72,6 +72,7 @@ Controller to supply to the driver VDD (+3.3V), PWM, INA, INB.
 
 
 
-### MCU with display with keypad
+### MCU with display and a keypad
+I am thinking to start with something as simple as Nano.  Just read temperatures.  Display those on a small OLED display.  Offer manual control over the fan.  
 
 
