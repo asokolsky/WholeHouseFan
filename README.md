@@ -70,6 +70,17 @@ Controller to supply tot he Hub +5V (or +3.3V) and to read DQ.
 Driver to supply to the Controller +5V.
 Controller to supply to the driver VDD (+3.3V), PWM, INA, INB.
 
+Alternatively!  Use a single CAT-6 cable with RJ-45 connector!
+
+|Device|   |   |   |Pin |Out |   |   |   |Connector|
+|------|---|---|---|----|----|---|---|---|-----|
+|      |1  |2  |3  |4   |5   |6  |7  |8  |RJ-45|
+|      |INA|INB|PWM|+24V|+24V|DQ |GND|GND|     |
+
+Now the Driver supplies to Controller with power (note POE-compatible pin-out!) to be stepped down to +5V or +3.3V.
+Controller supplies to the Driver INA, INB, PWM signals.  
+Controller supplies to the Hub DQ.  
+Driver supplies to the Hub 24V to be stepped down to +5V or +3.3V.
 
 
 ### MCU with display and a keypad
