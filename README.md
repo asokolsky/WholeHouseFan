@@ -1,7 +1,7 @@
 # Whole House Fan
 
-This is an Arduino controller for a whole house fan driven manually or on the basis of multiple temperature sensors.  
-Hopefully has GUI.
+This is an Arduino controller for a whole house fan (for definition see https://en.wikipedia.org/wiki/Whole-house_fan) controlled manually or on the basis of multiple temperature sensors.  
+Controller hopefully has GUI.
 Maybe Internet connection.
 Datalogging possible but not now.
 
@@ -58,19 +58,7 @@ The simplest solution would be to just use a single MOSFET to drive the fan.  Bu
 https://www.pololu.com/product/1451
 
 ### Connection Between Fan Driver With Hub and MCU
-I think I will use two CAT6 cables:
-
-|Device|   |   |   |Pin|Out|   |   |   |Connector|
-|------|---|---|---|---|---|---|---|---|-----|
-|      |1  |2  |3  |4  |5  |6  |7  |8  |RJ-45|
-|Hub   |   |   |GND|DQ |GND|+5V|   |   |     |
-|Driver|INA|INB|GND|PWM|GND|VDD|+5V|+5V|     |
-
-Controller to supply tot he Hub +5V (or +3.3V) and to read DQ.
-Driver to supply to the Controller +5V.
-Controller to supply to the driver VDD (+3.3V), PWM, INA, INB.
-
-Alternatively!  Use a single CAT-6 cable with RJ-45 connector!
+I think I will use a single CAT-6 cable with RJ-45 connector.
 
 |Device|   |   |   |Pin |Out |   |   |   |Connector|
 |------|---|---|---|----|----|---|---|---|-----|
