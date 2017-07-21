@@ -81,11 +81,11 @@ Offer manual control over the fan.
 Details at https://easyeda.com/asokolsky/Whole_House_Fan-096c6e4a6d674583abff0211818fedb9
 
 ### Schematics
-![Schematics](https://github.com/asokolsky/WholeHouseFan/doc/schematic.png "schematic")
+![Schematics](https://raw.githubusercontent.com/asokolsky/WholeHouseFan/master/doc/schematic.png "schematic")
 
 ### PCB
-![PCB Top](https://github.com/asokolsky/WholeHouseFan/doc/pcb-0.1.top.png "PCB Top")
-![PCB Bottom](https://github.com/asokolsky/WholeHouseFan/doc/pcb-0.1.bot.png "PCB Bottom")
+![PCB Top](https://raw.githubusercontent.com/asokolsky/WholeHouseFan/master/doc/pcb-0.1.top.png "PCB Top")
+![PCB Bottom](https://raw.githubusercontent.com/asokolsky/WholeHouseFan/master/doc/pcb-0.1.bot.png "PCB Bottom")
 
 
 ## Software
