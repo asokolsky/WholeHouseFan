@@ -1,6 +1,6 @@
 # Whole House Fan
 
-This is an Arduino controller for a whole house fan (for definition see https://en.wikipedia.org/wiki/Whole-house_fan) controlled manually or on the basis of multiple temperature sensors.  
+This is an Arduino controller for a whole house fan (for definition see https://en.wikipedia.org/wiki/Whole-house_fan) controlled manually or on the basis of multiple temperature sensors.
 Controller hopefully has GUI.
 Maybe Internet connection.
 Datalogging possible but not now.
@@ -20,7 +20,7 @@ Here is the plan!
 ```
 
 ### Power Supply
-For now, this is a switching AC-to-DC power supply.  24V chosen to reduce losses due to high current.  
+For now, this is a switching AC-to-DC power supply.  24V chosen to reduce losses due to high current.
 15A is an overkill but a prudent one given tendency for eBay vendors to overcommit.
 Possible alternative: an acid or LiIon or whatever battery, maybe even solar powered.
 
@@ -47,7 +47,7 @@ I will need temerature sensors for:
 
 
 ### Fan
-Main ctiteria for the choice was low noise, efficiency and ease of installation between joists.  I chose Spal 30102566  
+Main ctiteria for the choice was low noise, efficiency and ease of installation between joists.  I chose Spal 30102566 
 http://www.spal-usa.com/fans/automated/highperformance_14_curved.html
 The next step in reducing the noise would be suspending the fan just like in QuietCool products:
 http://www.wholehousefandeals.com/qc-es-2250.html
@@ -66,12 +66,44 @@ I think I will use a single CAT-6 cable with RJ-45 connector.
 |      |INA|INB|PWM|+24V|+24V|DQ |GND|GND|     |
 
 Now the Driver supplies to Controller with power (note POE-compatible pin-out!) to be stepped down to +5V or +3.3V.
-Controller supplies to the Driver INA, INB, PWM signals.  
-Controller supplies to the Hub DQ.  
+Controller supplies to the Driver INA, INB, PWM signals.
+Controller supplies to the Hub DQ.
 Driver supplies to the Hub 24V to be stepped down to +5V or +3.3V.
 
 
 ### MCU with display and a keypad
-I am thinking to start with something as simple as Nano.  Just read temperatures.  Display those on a small OLED display.  Offer manual control over the fan.  
+I am thinking to start with something as simple as Nano. 
+Just read temperatures.  Display those on a small OLED display.
+Offer manual control over the fan.
+
+## Hardware
+
+Details at https://easyeda.com/asokolsky/Whole_House_Fan-096c6e4a6d674583abff0211818fedb9
+
+### Schematics
+![Schematics](https://github.com/asokolsky/WholeHouseFan/doc/schematic.png "schematic")
+
+### PCB
+![PCB Top](https://github.com/asokolsky/WholeHouseFan/doc/pcb-0.1.top.png "PCB Top")
+![PCB Bottom](https://github.com/asokolsky/WholeHouseFan/doc/pcb-0.1.bot.png "PCB Bottom")
+
+
+## Software
+For schematics and PCB check out 
+
+
+## Libraries
+
+### DS18B20
+Use one of
+https://github.com/milesburton/Arduino-Temperature-Control-Library
+or
+https://github.com/matmunk/DS18B20
+or
+https://github.com/nettigo/DS18B20
+
+
+
+
 
 
