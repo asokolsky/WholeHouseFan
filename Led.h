@@ -2,21 +2,21 @@
 class Led
 {
   /** the overheating led pin - use a built-in one */
-  const int pinLed = 13;
+  uint8_t m_pinLed;
 
 public:
-  Led()
+  Led(uint8_t pinLed) : m_pinLed(pinLed)
   {
-    pinMode(pinLed, OUTPUT);
+    pinMode(m_pinLed, OUTPUT);
   }
 
   void turnOn()
   {
-    digitalWrite(pinLed, HIGH);
+    digitalWrite(m_pinLed, HIGH);
   }
   void turnOff()
   {
-    digitalWrite(pinLed, LOW);
+    digitalWrite(m_pinLed, LOW);
   }
   
 };

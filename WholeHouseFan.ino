@@ -4,9 +4,10 @@
  *  
  */
 #include <Arduino.h>
-#include "Trace.h"
+#include "NanoViews.h"
 #include "Fan.h"
 #include "Led.h"
+#include "PCB.h"
  
 /** LM35 temperature sensor is connected to this pin */
 const int pinTemp = A1;
@@ -25,8 +26,8 @@ unsigned short int g_tempMax = 0;
 // nothing to customize below
 //
 
-Fan g_fan;
-Led g_overheatingLed;
+Fan g_fan(pinPWN, pinCW, pinCCW);
+Led g_overheatingLed(pinLed);
 
 /** Counter for sensor fan feedback */
 //volatile unsigned long int g_uiCounter = 0;
