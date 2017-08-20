@@ -8,19 +8,7 @@
 #include "Fan.h"
 #include "Led.h"
 #include "PCB.h"
- 
-/** LM35 temperature sensor is connected to this pin */
-const int pinTemp = A1;
-
-/** the temperature in C to start the fan */
-const unsigned short int tempMin = 26; // 30;
-/** the maximum temperature in C when fan is at 100% */
-const unsigned short int tempMax = 35; // 70;
-
-/** Min observed temperature in C */
-unsigned short int g_tempMin = 0;
-/** Max observed temperature in C */
-unsigned short int g_tempMax = 0;
+#include "AnalogNavigationKeypad.h"
 
 //
 // nothing to customize below
@@ -29,83 +17,64 @@ unsigned short int g_tempMax = 0;
 Fan g_fan(pinPWN, pinCW, pinCCW);
 Led g_overheatingLed(pinLed);
 
-/** Counter for sensor fan feedback */
-//volatile unsigned long int g_uiCounter = 0;
 
-/** called because fan hall sensor generates interupts */
-/*void onHallSensor()
+class MyNavKeyPad: public AnalogNavigationKeypad
 {
-  g_uiCounter++;
-}*/
+public:  
+  /** this test if for a keyboard connected to A0 and A1 */
+  MyNavKeyPad() : AnalogNavigationKeypad(pinKeyPad1, pinKeyPad2)
+  {
+    
+  }
+  bool onUserInActivity(unsigned long ulNow);
+  bool onKeyAutoRepeat(uint8_t vks);
+  bool onKeyDown(uint8_t vks);
+  bool onLongKeyDown(uint8_t vks);
+  bool onKeyUp(uint8_t vks);
+};
 
-/**  
- * get the temperature and convert it to Celsius 
- * read analog LM35 sensor, 
- * presumes you did analogReference(INTERNAL); - more precise but smaller range
- */
-unsigned short int readTemperature() 
+bool MyNavKeyPad::onUserInActivity(unsigned long ulNow)
 {
-  // first sample seems to fluctuate a lot. Disregard it
-  {
-    unsigned int intmp = analogRead(pinTemp);
-    //Serial.println(intmp);
-    delay(60);
-  }
-
-  // according to http://www.atmel.com/dyn/resources/prod_documents/doc8003.pdf
-  // 11 bit virtual resolution arduino ADC is 10 bit real resolution
-  // for 12 bit resolution 16 samples and >> 4 is needed
-  unsigned int reading = 0; // accumulate samples here
-  for(int i=0; i<=3; i++)
-  {
-    unsigned int intmp = analogRead(pinTemp);
-    reading = reading + intmp;
-    //Serial.println(intmp);
-    delay(60);
-  }
-  reading = reading>>2; // averaged over 4 samples
-  /*
-  unsigned int reading = analogRead(pinTemp);
-  Serial.print("analogRead() => ");
-  Serial.println(reading);
-  */
-
-  // 110 mV is mapped into 1024 steps.  analogReference(INTERNAL) needed
-  float tempC = (float)reading * 110 / 1024;
-  return (unsigned short)tempC;
+  DEBUG_PRINT("MyNavKeyPad::onUserInActivity ulNow="); DEBUG_PRINTDEC(ulNow); DEBUG_PRINTLN("");
+  return false; 
 }
-/**
- * Dump some statistics so that we can see how the controller and environment are doing...
- */
-void dumpStats(unsigned long now)
+
+bool MyNavKeyPad::onKeyAutoRepeat(uint8_t vks)
 {
-  /** how often to dump stats */
-  const unsigned long timeStatsDumpPeriod = 30000;
-  /** when we dumped stats last */
-  static unsigned long g_timeLastStatsDump = 0;
-  // the following will handle rollover just fine!
-  if((unsigned long)(now - g_timeLastStatsDump) > timeStatsDumpPeriod) 
-  {
-    g_timeLastStatsDump = now;
-    char buf[256];
-    sprintf(buf, "Settings: tempMin=%d, tempMax=%d,", (int)tempMin, (int)tempMax);
-    Serial.println(buf);
-    sprintf(buf, "Observed: g_tempMin=%d, g_tempMax=%d", (int)g_tempMin, (int)g_tempMax);
-    Serial.println(buf);
-  }
+  DEBUG_PRINT("MyNavKeyPad::onKeyAutoRepeat vks="); DEBUG_PRNTLN(getKeyNames(vks));
+  return false; 
 }
+
+bool MyNavKeyPad::onKeyDown(uint8_t vks)
+{
+  DEBUG_PRINT("MyNavKeyPad::onKeyDown vks="); DEBUG_PRNTLN(getKeyNames(vks));
+  return false; 
+}
+
+bool MyNavKeyPad::onLongKeyDown(uint8_t vks)
+{
+  DEBUG_PRINT("MyNavKeyPad::onLongKeyDown vks="); DEBUG_PRNTLN(getKeyNames(vks));
+  return false; 
+}
+
+bool MyNavKeyPad::onKeyUp(uint8_t vks)
+{
+  DEBUG_PRINT("MyNavKeyPad::onKeyUp vks="); DEBUG_PRNTLN(getKeyNames(vks));
+  return false; 
+}
+
+MyNavKeyPad g_kp;
+
 
 void setup() 
 {
-  Serial.begin(115200);
+  Serial.begin(115200);  
+  delay(1000);   
+  //while(!Serial)  ; // wait for serial port to connect. Needed for Leonardo only
+  DEBUG_PRINTLN("Whole House Fan!");
+    
+  //g_kp.setup();  
 
-  // LM35 is not going to provide more than 1V output and that @100C
-  // switch to internal 1.1V reference
-  analogReference(INTERNAL);
-  pinMode(pinTemp, INPUT);
-
-  //attachInterrupt(0, onHallSensor, RISING);
-  g_tempMin = g_tempMax = readTemperature();
 
   //g_fan.test();
   g_fan.startUpSequence();
@@ -113,47 +82,8 @@ void setup()
 
 void loop() 
 {
-  // temp in degrees C
-  unsigned short int temp = readTemperature();
-  if(temp < g_tempMin)
-    g_tempMin = temp;
-  else if(temp > g_tempMax)
-    g_tempMax = temp;
-  
-  Serial.print("readTemperature() => ");  Serial.println(temp);
-
-  if(temp < tempMin) 
-  {
-    g_fan.stop();
-    g_overheatingLed.turnOff();
-  }  
-  else if(temp < tempMax)
-  {
-    // determine the setpoint, choice of type important to avoid overflow
-    unsigned int pwmFan = map(temp, tempMin, tempMax, Fan::pwmMin, Fan::pwmMax);
-    if(g_fan.getLastPWM() == 0) 
-    {
-      if(pwmFan < Fan::pwmStart) 
-        pwmFan = Fan::pwmStart;
-    }
-    else
-    {
-      // instead of spinning at target pwm, lets get there gradually.
-      pwmFan = (pwmFan + g_fan.getLastPWM())/2;
-    }
-    g_fan.go(pwmFan);
-    g_overheatingLed.turnOff();
-  }
-  else
-  {
-    g_fan.go(Fan::pwmMax);
-    g_overheatingLed.turnOn();
-  }
-  //DEBUG_PRINTLN(g_uiCounter);
-  //g_uiCounter = 0;
-
-  dumpStats(millis()); 
-  delay(4000);
+  unsigned long ulNow = millis();
+  g_kp.getAndDispatchKey(ulNow);
 }
 
 

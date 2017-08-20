@@ -15,7 +15,7 @@ Here is the plan!
 +----------------------+   |            |   +-----+
      +-----------------+   |     &      |   +------------------------------+
      | 1Wire devices   |==>|            |<=>| MCU with display with keypad |
-     +-----------------+|  |  1Wire Hub |==>|                              |
+     +-----------------+|  |  1Wire Hub |   |                              |
       +-----------------+  +------------+   +------------------------------+
 ```
 
@@ -38,8 +38,8 @@ Sensors will be terminated into RJ-11 or RJ-12 or RJ-45 connectors with the foll
 |      |  |  |1 |2  |3  |4  |  |  |RJ-11|
 |Sensor|  | |GND|DQ |GND|+5V|  |  ||
 
-If I decide to stick with a 3.3V MCU (higly likely) I will supply 3.3V to the sensors instead of 5V.
-I will need temerature sensors for:
+If I decide to stick with a 3.3V MCU (likely) I will supply 3.3V to the sensors instead of 5V.
+I will need temperature sensors for:
   * Network closet (in the housing with MCU/Display/Keypad)
   * Attic
   * North balcony
@@ -58,18 +58,16 @@ The simplest solution would be to just use a single MOSFET to drive the fan.  Bu
 https://www.pololu.com/product/1451
 
 ### Connection Between Fan Driver With Hub and MCU
-I think I will use a single CAT-6 cable with RJ-45 connector.
+I will use a single CAT-5 cable with RJ-45 connector.
 
 |Device|   |   |   |Pin |Out |   |   |   |Connector|
 |------|---|---|---|----|----|---|---|---|-----|
 |      |1  |2  |3  |4   |5   |6  |7  |8  |RJ-45|
 |      |INA|INB|PWM|+24V|+24V|DQ |GND|GND|     |
 
-Now the Driver supplies to Controller with power (note POE-compatible pin-out!) to be stepped down to +5V or +3.3V.
+Now the Driver supplies to Controller with power (note POE-compatible pin-out!) to be stepped down to power MCU.
 Controller supplies to the Driver INA, INB, PWM signals.
 Controller supplies to the Hub DQ.
-Driver supplies to the Hub 24V to be stepped down to +5V or +3.3V.
-
 
 ### MCU with display and a keypad
 I am thinking to start with something as simple as Nano. 
@@ -89,10 +87,12 @@ Details at https://easyeda.com/asokolsky/Whole_House_Fan-096c6e4a6d674583abff021
 
 
 ## Software
-For schematics and PCB check out 
-
+Work in progress.
 
 ## Libraries
+
+### NanoViews
+My C++ library offering MVC=like APIs to Display and Keyboard.  It in turn relies on u2g2 to abstract out display.
 
 ### DS18B20
 Use one of
