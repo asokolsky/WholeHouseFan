@@ -1,9 +1,8 @@
 # Whole House Fan
 
-This is an Arduino controller for a whole house fan (for definition see https://en.wikipedia.org/wiki/Whole-house_fan) controlled manually or on the basis of multiple temperature sensors.
-Controller hopefully has GUI.
-Maybe Internet connection.
-Datalogging possible but not now.
+This is an ESP8266 (WeMos D1 Mini) controller for a whole house fan - 
+for definition see https://en.wikipedia.org/wiki/Whole-house_fan 
+The fan is controlled manually or via MQTT broker.
 
 
 ## System Architecture
@@ -12,11 +11,11 @@ Here is the plan!
 ```
 +----------------------+   +------------+   +-----+
 | 24V DC Power Supply  |==>| Fan Driver |==>| Fan |
-+----------------------+   |            |   +-----+
-     +-----------------+   |     &      |   +------------------------------+
-     | 1Wire devices   |==>|            |<=>| MCU with display with keypad |
-     +-----------------+|  |  1Wire Hub |   |                              |
-      +-----------------+  +------------+   +------------------------------+
++----------------------+   |  1Wire Hub |   +-----+
+     +-----------------+   |            |
+     | 1Wire devices   |==>|            |
+     +-----------------+|  |  MCU       |
+      +-----------------+  +------------+
 ```
 
 ### Power Supply
@@ -54,29 +53,11 @@ http://www.wholehousefandeals.com/qc-es-2250.html
 The latter site can be also used for information on sizing the fan to the volume of your house.
 
 ### Fan Driver & 1Wire Hub
-The simplest solution would be to just use a single MOSFET to drive the fan.  But no.  I am getting a VNH5019 Motor Driver
-https://www.pololu.com/product/1451
-
-### Connection Between Fan Driver With Hub and MCU
-I will use a single CAT-5 cable with RJ-45 connector.
-
-|Device|   |   |   |Pin |Out |   |   |   |Connector|
-|------|---|---|---|----|----|---|---|---|-----|
-|      |1  |2  |3  |4   |5   |6  |7  |8  |RJ-45|
-|      |INA|INB|PWM|+24V|+24V|DQ |GND|GND|     |
-
-Now the Driver supplies to Controller with power (note POE-compatible pin-out!) to be stepped down to power MCU.
-Controller supplies to the Driver INA, INB, PWM signals.
-Controller supplies to the Hub DQ.
-
-### MCU with display and a keypad
-I am thinking to start with something as simple as Nano. 
-Just read temperatures.  Display those on a small OLED display.
-Offer manual control over the fan.
+The simplest solution would be to use a single logical level MOSFET to drive the fan. And this is what I plan!
 
 ## Hardware
 
-Details at https://easyeda.com/asokolsky/Whole_House_Fan-096c6e4a6d674583abff0211818fedb9
+Details at https://easyeda.com/asokolsky/New_Project-a64426de9312427c8bccbf24d4158ea6
 
 ### Schematics
 ![Schematics](https://raw.githubusercontent.com/asokolsky/WholeHouseFan/master/doc/schematic.png "schematic")
@@ -90,9 +71,6 @@ Details at https://easyeda.com/asokolsky/Whole_House_Fan-096c6e4a6d674583abff021
 Work in progress.
 
 ## Libraries
-
-### NanoViews
-My C++ library offering MVC=like APIs to Display and Keyboard.  It in turn relies on u2g2 to abstract out display.
 
 ### DS18B20
 Use one of
